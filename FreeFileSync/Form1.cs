@@ -11,72 +11,36 @@ namespace FreeFileSync
             InitializeComponent();
         }
 
-        string[] files1;
-        string[] files2;
-
         private void filePathSearch1_Click(object sender, EventArgs e)
         {
-            if (filePath1.Text != "")
-            {
-                filePath1.Text = "";
-            }
-
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
 
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
                 filePath1.Text = folderBrowserDialog.SelectedPath;
-                getPathFiles(folderBrowserDialog.SelectedPath, filePath1.Name);
+                string[] files = Directory.GetFiles(folderBrowserDialog.SelectedPath);
+                PopulateList(files, listBox1);
             }
         }
 
         private void filePathSearch2_Click(object sender, EventArgs e)
         {
-            if (filePath2.Text != "")
-            {
-                filePath2.Text = "";
-            }
-
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
 
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
                 filePath2.Text = folderBrowserDialog.SelectedPath;
-                getPathFiles(folderBrowserDialog.SelectedPath, filePath2.Name);
-            }
-        }
-
-        private void getPathFiles(string path, string textBox)
-        {
-            int i1 = 0;
-            int i2 = 0;
-
-            if (textBox == "filePath1")
-            {
-                files1 = Directory.GetFiles(path);
-
-                foreach (var file in files1)
-                {
-                    fileDisplay1.Text += $"{files1[i1]}\r\n";
-                    i1++;
-                }
-            }
-
-            if (textBox == "filePath2")
-            {
-                files2 = Directory.GetFiles(path);
-
-                foreach (var file in files2)
-                {
-                    fileDisplay2.Text += $"{files2[i2]}\r\n";
-                    i2++;
-                }
+                string[] files = Directory.GetFiles(folderBrowserDialog.SelectedPath);
+                PopulateList(files, listBox2);
             }
         }
 
         private void Synchronize_Click(object sender, EventArgs e)
         {
             int i = 0;
+
+            var files1 = Directory.GetFiles(filePath1.Text);
+            var files2 = Directory.GetFiles(filePath2.Text);
 
             if (files1 != null && files2 != null)
             {
@@ -87,6 +51,22 @@ namespace FreeFileSync
                     File.Move($"{files1[i]}", $"{filePath2.Text}\\{filename}");
                     i++;
                 }
+
+                string[] listFiles1 = Directory.GetFiles(filePath1.Text);
+                PopulateList(listFiles1, listBox1);
+
+                string[] listFiles2 = Directory.GetFiles(filePath2.Text);
+                PopulateList(listFiles2, listBox2);
+            }
+        }
+
+        private void PopulateList(string[] files, ListBox listBox)
+        {
+            listBox.Items.Clear();
+
+            foreach (string file in files)
+            {
+                listBox.Items.Add(file);
             }
         }
     }
