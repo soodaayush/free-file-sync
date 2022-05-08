@@ -130,14 +130,14 @@ namespace FreeFileSync
         {
             listBox.Items.Clear();
 
+            int i = 0;
+
             foreach (string file in files)
             {
-                listBox.Items.Add(file);
-            }
+                string filename = Path.GetFileName(files[i]);
 
-            foreach (string dir in dirs)
-            {
-                listBox.Items.Add(dir);
+                listBox.Items.Add(filename);
+                i++;
             }
         }
 

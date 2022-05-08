@@ -53,6 +53,7 @@
             // 
             // filePathSearch1
             // 
+            this.filePathSearch1.Font = new System.Drawing.Font("Segoe UI Variable Text", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.filePathSearch1.Location = new System.Drawing.Point(488, 112);
             this.filePathSearch1.Name = "filePathSearch1";
             this.filePathSearch1.Size = new System.Drawing.Size(94, 32);
@@ -63,6 +64,7 @@
             // 
             // filePathSearch2
             // 
+            this.filePathSearch2.Font = new System.Drawing.Font("Segoe UI Variable Text", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.filePathSearch2.Location = new System.Drawing.Point(1217, 110);
             this.filePathSearch2.Name = "filePathSearch2";
             this.filePathSearch2.Size = new System.Drawing.Size(94, 34);
