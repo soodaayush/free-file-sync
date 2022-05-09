@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -20,7 +21,7 @@ namespace FreeFileSync
                 filePath1.Text = folderBrowserDialog.SelectedPath;
                 string[] files = Directory.GetFiles(folderBrowserDialog.SelectedPath);
                 string[] dirs = Directory.GetDirectories(folderBrowserDialog.SelectedPath);
-                PopulateList(files, dirs, listBox1);
+                PopulateList(files, dirs, folderBrowserDialog.SelectedPath, listBox1);
             }
         }
 
@@ -33,13 +34,17 @@ namespace FreeFileSync
                 filePath2.Text = folderBrowserDialog.SelectedPath;
                 string[] files = Directory.GetFiles(folderBrowserDialog.SelectedPath);
                 string[] dirs = Directory.GetDirectories(folderBrowserDialog.SelectedPath);
-                PopulateList(files, dirs, listBox2);
+                PopulateList(files, dirs, folderBrowserDialog.SelectedPath, listBox2);
             }
         }
 
         private void SynchronizeLeftToRight_Click(object sender, EventArgs e)
         {
-            int i = 0;
+            if (filePath1.Text == "" || filePath2.Text == "")
+            {
+                errorMessage.Text = "One or more textboxes are not filled!";
+                return;
+            }
 
             var files1 = Directory.GetFiles(filePath1.Text);
             var files2 = Directory.GetFiles(filePath2.Text);
@@ -51,53 +56,53 @@ namespace FreeFileSync
             {
                 foreach (var file in files1)
                 {
-                    string filename = Path.GetFileName(files1[i]);
+                    string filename = Path.GetFileName(file);
 
                     if (!File.Exists($"{filePath2.Text}\\{filename}"))
                     {
-                        File.Copy($"{files1[i]}", $"{filePath2.Text}\\{filename}");
+                        File.Copy($"{file}", $"{filePath2.Text}\\{filename}");
                     }
-
-                    i++;
                 }
 
                 string[] listFiles1 = Directory.GetFiles(filePath1.Text);
                 string[] listDirs1 = Directory.GetDirectories(filePath1.Text);
-                PopulateList(listFiles1, listDirs1, listBox1);
+                PopulateList(listFiles1, listDirs1, filePath1.Text, listBox1);
 
                 string[] listFiles2 = Directory.GetFiles(filePath2.Text);
                 string[] listDirs2 = Directory.GetDirectories(filePath2.Text);
-                PopulateList(listFiles2, listDirs2, listBox2);
+                PopulateList(listFiles2, listDirs2, filePath2.Text, listBox2);
             }
 
-            //if (dirs1 != null)
-            //{
-            //    foreach (var file in dirs1)
-            //    {
-            //        string filename = Path.GetDirectoryName(dirs1[i]);
+            if (dirs1 != null && dirs2 != null)
+            {
+                foreach (var dir in dirs1)
+                {
+                    string directoryName = Path.GetFileName(dir);
 
-            //        if (!File.Exists($"{filePath2.Text}\\{filename}"))
-            //        {
-            //            Directory.Copy($"{files1[i]}", $"{filePath2.Text}\\{filename}");
-            //        }
+                    if (!Directory.Exists($"{filePath2.Text}\\{directoryName}"))
+                    {
+                        Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
+                    }
+                }
 
-            //        i++;
-            //    }
+                string[] listFiles1 = Directory.GetFiles(filePath1.Text);
+                string[] listDirs1 = Directory.GetDirectories(filePath1.Text);
+                PopulateList(listFiles1, listDirs1, filePath1.Text, listBox1);
 
-            //    string[] listFiles1 = Directory.GetFiles(filePath1.Text);
-            //    string[] listDirs1 = Directory.GetDirectories(filePath1.Text);
-            //    PopulateList(listFiles1, listDirs1, listBox1);
-
-            //    string[] listFiles2 = Directory.GetFiles(filePath2.Text);
-            //    string[] listDirs2 = Directory.GetDirectories(filePath2.Text);
-            //    PopulateList(listFiles2, listDirs2, listBox2);
-            //}
+                string[] listFiles2 = Directory.GetFiles(filePath2.Text);
+                string[] listDirs2 = Directory.GetDirectories(filePath2.Text);
+                PopulateList(listFiles2, listDirs2, filePath2.Text, listBox2);
+            }
         }
 
 
         private void SynchronizeRightToLeft_Click(object sender, EventArgs e)
         {
-            int i = 0;
+            if (filePath1.Text == "" || filePath2.Text == "")
+            {
+                errorMessage.Text = "One or more textboxes are not filled!";
+                return;
+            }
 
             var files1 = Directory.GetFiles(filePath1.Text);
             var files2 = Directory.GetFiles(filePath2.Text);
@@ -106,44 +111,67 @@ namespace FreeFileSync
             {
                 foreach (var file in files2)
                 {
-                    string filename = Path.GetFileName(files2[i]);
+                    string filename = Path.GetFileName(file);
 
                     if (!File.Exists($"{filePath1.Text}\\{filename}"))
                     {
-                        File.Copy($"{files2[i]}", $"{filePath1.Text}\\{filename}");
+                        File.Copy($"{file}", $"{filePath1.Text}\\{filename}");
                     }
-
-                    i++;
                 }
 
                 string[] listFiles1 = Directory.GetFiles(filePath1.Text);
                 string[] listDirs1 = Directory.GetDirectories(filePath1.Text);
-                PopulateList(listFiles1, listDirs1, listBox1);
+                PopulateList(listFiles1, listDirs1, filePath1.Text, listBox1);
 
                 string[] listFiles2 = Directory.GetFiles(filePath2.Text);
                 string[] listDirs2 = Directory.GetDirectories(filePath2.Text);
-                PopulateList(listFiles2, listDirs2, listBox2);
+                PopulateList(listFiles2, listDirs2, filePath2.Text, listBox2);
             }
         }
 
-        private void PopulateList(string[] files, string[] dirs, ListBox listBox)
+        private void PopulateList(string[] files, string[] dirs, string path, ListBox listBox)
         {
             listBox.Items.Clear();
 
-            int i = 0;
+            //List<String> DirSearch(directories)
+            //{
+            //    List<String> files = new List<String>();
+
+            //    foreach (string f in Directory.GetFiles(path))
+            //    {
+            //        files.Add(f);
+            //        listBox.Items.Add(f);
+            //    }
+
+            //    foreach (string d in Directory.GetDirectories(path))
+            //    {
+            //        files.AddRange(DirSearch(d));
+            //        listBox.Items.Add(d);
+            //    }
+
+            //    return files;
+
+            //}
+
 
             foreach (string file in files)
             {
-                string filename = Path.GetFileName(files[i]);
+                listBox.Items.Add(file);
+            }
 
-                listBox.Items.Add(filename);
-                i++;
+            foreach (string dir in dirs)
+            {
+                listBox.Items.Add(dir);
             }
         }
 
         private void SynchronizeTwoWay_Click(object sender, EventArgs e)
         {
-            int i = 0;
+            if (filePath1.Text == "" || filePath2.Text == "")
+            {
+                errorMessage.Text = "One or more textboxes are not filled!";
+                return;
+            }
 
             var files1 = Directory.GetFiles(filePath1.Text);
             var files2 = Directory.GetFiles(filePath2.Text);
@@ -152,37 +180,31 @@ namespace FreeFileSync
             {
                 foreach (var file in files1)
                 {
-                    string filename = Path.GetFileName(files1[i]);
+                    string filename = Path.GetFileName(file);
 
                     if (!File.Exists($"{filePath2.Text}\\{filename}"))
                     {
-                        File.Copy($"{files1[i]}", $"{filePath2.Text}\\{filename}");
+                        File.Copy($"{file}", $"{filePath2.Text}\\{filename}");
                     }
-
-                    i++;
                 }
-
-                i = 0;
 
                 foreach (var file in files2)
                 {
-                    string filename = Path.GetFileName(files2[i]);
+                    string filename = Path.GetFileName(file);
 
                     if (!File.Exists($"{filePath1.Text}\\{filename}"))
                     {
-                        File.Copy($"{files2[i]}", $"{filePath1.Text}\\{filename}");
+                        File.Copy($"{file}", $"{filePath1.Text}\\{filename}");
                     }
-
-                    i++;
                 }
 
                 string[] listFiles1 = Directory.GetFiles(filePath1.Text);
                 string[] listDirs1 = Directory.GetDirectories(filePath1.Text);
-                PopulateList(listFiles1, listDirs1, listBox1);
+                PopulateList(listFiles1, listDirs1, filePath1.Text, listBox1);
 
                 string[] listFiles2 = Directory.GetFiles(filePath2.Text);
                 string[] listDirs2 = Directory.GetDirectories(filePath2.Text);
-                PopulateList(listFiles2, listDirs2, listBox2);
+                PopulateList(listFiles2, listDirs2, filePath2.Text, listBox2);
             }
         }
     }

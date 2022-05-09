@@ -39,6 +39,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.synchronizeRightToLeft = new System.Windows.Forms.Button();
             this.synchronizeTwoWay = new System.Windows.Forms.Button();
+            this.errorMessage = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // filePath1
@@ -98,6 +99,7 @@
             // 
             this.listBox1.Font = new System.Drawing.Font("Segoe UI Variable Text", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.listBox1.FormattingEnabled = true;
+            this.listBox1.HorizontalScrollbar = true;
             this.listBox1.ItemHeight = 22;
             this.listBox1.Location = new System.Drawing.Point(72, 213);
             this.listBox1.Name = "listBox1";
@@ -108,6 +110,7 @@
             // 
             this.listBox2.Font = new System.Drawing.Font("Segoe UI Variable Text", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.listBox2.FormattingEnabled = true;
+            this.listBox2.HorizontalScrollbar = true;
             this.listBox2.ItemHeight = 22;
             this.listBox2.Location = new System.Drawing.Point(805, 213);
             this.listBox2.Name = "listBox2";
@@ -162,12 +165,26 @@
             this.synchronizeTwoWay.UseVisualStyleBackColor = true;
             this.synchronizeTwoWay.Click += new System.EventHandler(this.SynchronizeTwoWay_Click);
             // 
+            // errorMessage
+            // 
+            this.errorMessage.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.errorMessage.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.errorMessage.Font = new System.Drawing.Font("Segoe UI Variable Text", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.errorMessage.ForeColor = System.Drawing.Color.OrangeRed;
+            this.errorMessage.Location = new System.Drawing.Point(72, 716);
+            this.errorMessage.Name = "errorMessage";
+            this.errorMessage.ReadOnly = true;
+            this.errorMessage.Size = new System.Drawing.Size(1239, 45);
+            this.errorMessage.TabIndex = 13;
+            this.errorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // FileSync
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1397, 829);
+            this.Controls.Add(this.errorMessage);
             this.Controls.Add(this.synchronizeTwoWay);
             this.Controls.Add(this.synchronizeRightToLeft);
             this.Controls.Add(this.textBox2);
@@ -199,5 +216,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button synchronizeRightToLeft;
         private System.Windows.Forms.Button synchronizeTwoWay;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox errorMessage;
     }
 }
