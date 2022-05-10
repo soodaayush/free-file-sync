@@ -18,10 +18,15 @@ namespace FreeFileSync
 
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
+                listBox1.Items.Clear();
+
                 filePath1.Text = folderBrowserDialog.SelectedPath;
-                string[] files = Directory.GetFiles(folderBrowserDialog.SelectedPath);
-                string[] dirs = Directory.GetDirectories(folderBrowserDialog.SelectedPath);
-                PopulateList(files, dirs, folderBrowserDialog.SelectedPath, listBox1);
+                List<string> files = DirSearch(folderBrowserDialog.SelectedPath);
+
+                foreach (var file in files)
+                {
+                    listBox1.Items.Add(file);
+                }
             }
         }
 
@@ -31,10 +36,15 @@ namespace FreeFileSync
 
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
+                listBox2.Items.Clear();
+
                 filePath2.Text = folderBrowserDialog.SelectedPath;
-                string[] files = Directory.GetFiles(folderBrowserDialog.SelectedPath);
-                string[] dirs = Directory.GetDirectories(folderBrowserDialog.SelectedPath);
-                PopulateList(files, dirs, folderBrowserDialog.SelectedPath, listBox2);
+                List<string> files = DirSearch(folderBrowserDialog.SelectedPath);
+
+                foreach (var file in files)
+                {
+                    listBox2.Items.Add(file);
+                }
             }
         }
 
@@ -58,19 +68,13 @@ namespace FreeFileSync
                 {
                     string filename = Path.GetFileName(file);
 
-                    if (!File.Exists($"{filePath2.Text}\\{filename}"))
+                    if (!File.Exists(Path.Combine(filePath2.Text, filename)))
                     {
                         File.Copy($"{file}", $"{filePath2.Text}\\{filename}");
                     }
                 }
 
-                string[] listFiles1 = Directory.GetFiles(filePath1.Text);
-                string[] listDirs1 = Directory.GetDirectories(filePath1.Text);
-                PopulateList(listFiles1, listDirs1, filePath1.Text, listBox1);
-
-                string[] listFiles2 = Directory.GetFiles(filePath2.Text);
-                string[] listDirs2 = Directory.GetDirectories(filePath2.Text);
-                PopulateList(listFiles2, listDirs2, filePath2.Text, listBox2);
+                
             }
 
             if (dirs1 != null && dirs2 != null)
@@ -78,20 +82,51 @@ namespace FreeFileSync
                 foreach (var dir in dirs1)
                 {
                     string directoryName = Path.GetFileName(dir);
+                    DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                    DirectoryInfo target = new DirectoryInfo(filePath2.Text);
 
                     if (!Directory.Exists($"{filePath2.Text}\\{directoryName}"))
                     {
                         Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
+
+                        foreach (FileInfo fi in dirInfo.GetFiles())
+                        {
+                            fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+                        }
                     }
                 }
 
-                string[] listFiles1 = Directory.GetFiles(filePath1.Text);
-                string[] listDirs1 = Directory.GetDirectories(filePath1.Text);
-                PopulateList(listFiles1, listDirs1, filePath1.Text, listBox1);
+                //List<string> pathFiles1 = DirSearch(filePath1.Text);
 
-                string[] listFiles2 = Directory.GetFiles(filePath2.Text);
-                string[] listDirs2 = Directory.GetDirectories(filePath2.Text);
-                PopulateList(listFiles2, listDirs2, filePath2.Text, listBox2);
+                //foreach (var file in pathFiles1)
+                //{
+                //    listBox1.Items.Add(file);
+                //}
+
+                //List<string> pathFiles2 = DirSearch(filePath2.Text);
+
+                //foreach (var file in pathFiles2)
+                //{
+                //    listBox2.Items.Add(file);
+                //}
+            }
+
+            List<string> pathFiles1 = DirSearch(filePath1.Text);
+
+            listBox1.Items.Clear();
+
+            foreach (var file in pathFiles1)
+            {
+                listBox1.Items.Add(file);
+            }
+
+            List<string> pathFiles2 = DirSearch(filePath2.Text);
+
+            listBox2.Items.Clear();
+
+            foreach (var file in pathFiles2)
+            {
+                listBox2.Items.Add(file);
             }
         }
 
@@ -133,27 +168,6 @@ namespace FreeFileSync
         {
             listBox.Items.Clear();
 
-            //List<String> DirSearch(directories)
-            //{
-            //    List<String> files = new List<String>();
-
-            //    foreach (string f in Directory.GetFiles(path))
-            //    {
-            //        files.Add(f);
-            //        listBox.Items.Add(f);
-            //    }
-
-            //    foreach (string d in Directory.GetDirectories(path))
-            //    {
-            //        files.AddRange(DirSearch(d));
-            //        listBox.Items.Add(d);
-            //    }
-
-            //    return files;
-
-            //}
-
-
             foreach (string file in files)
             {
                 listBox.Items.Add(file);
@@ -163,6 +177,23 @@ namespace FreeFileSync
             {
                 listBox.Items.Add(dir);
             }
+        }
+
+        List<String> DirSearch(string directories)
+        {
+            List<String> files = new List<String>();
+
+            foreach (string f in Directory.GetFiles(directories))
+            {
+                files.Add(f);
+            }
+
+            foreach (string d in Directory.GetDirectories(directories))
+            {
+                files.AddRange(DirSearch(d));
+            }
+
+            return files;
         }
 
         private void SynchronizeTwoWay_Click(object sender, EventArgs e)
