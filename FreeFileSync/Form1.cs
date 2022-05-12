@@ -73,8 +73,6 @@ namespace FreeFileSync
                         File.Copy($"{file}", $"{filePath2.Text}\\{filename}");
                     }
                 }
-
-                
             }
 
             if (dirs1 != null && dirs2 != null)
@@ -91,24 +89,10 @@ namespace FreeFileSync
 
                         foreach (FileInfo fi in dirInfo.GetFiles())
                         {
-                            fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+                            fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
                         }
                     }
                 }
-
-                //List<string> pathFiles1 = DirSearch(filePath1.Text);
-
-                //foreach (var file in pathFiles1)
-                //{
-                //    listBox1.Items.Add(file);
-                //}
-
-                //List<string> pathFiles2 = DirSearch(filePath2.Text);
-
-                //foreach (var file in pathFiles2)
-                //{
-                //    listBox2.Items.Add(file);
-                //}
             }
 
             List<string> pathFiles1 = DirSearch(filePath1.Text);
@@ -142,40 +126,58 @@ namespace FreeFileSync
             var files1 = Directory.GetFiles(filePath1.Text);
             var files2 = Directory.GetFiles(filePath2.Text);
 
+            var dirs1 = Directory.GetDirectories(filePath1.Text);
+            var dirs2 = Directory.GetDirectories(filePath2.Text);
+
             if (files1 != null && files2 != null)
             {
                 foreach (var file in files2)
                 {
                     string filename = Path.GetFileName(file);
 
-                    if (!File.Exists($"{filePath1.Text}\\{filename}"))
+                    if (!File.Exists(Path.Combine(filePath1.Text, filename)))
                     {
                         File.Copy($"{file}", $"{filePath1.Text}\\{filename}");
                     }
                 }
-
-                string[] listFiles1 = Directory.GetFiles(filePath1.Text);
-                string[] listDirs1 = Directory.GetDirectories(filePath1.Text);
-                PopulateList(listFiles1, listDirs1, filePath1.Text, listBox1);
-
-                string[] listFiles2 = Directory.GetFiles(filePath2.Text);
-                string[] listDirs2 = Directory.GetDirectories(filePath2.Text);
-                PopulateList(listFiles2, listDirs2, filePath2.Text, listBox2);
-            }
-        }
-
-        private void PopulateList(string[] files, string[] dirs, string path, ListBox listBox)
-        {
-            listBox.Items.Clear();
-
-            foreach (string file in files)
-            {
-                listBox.Items.Add(file);
             }
 
-            foreach (string dir in dirs)
+            if (dirs1 != null && dirs2 != null)
             {
-                listBox.Items.Add(dir);
+                foreach (var dir in dirs2)
+                {
+                    string directoryName = Path.GetFileName(dir);
+                    DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                    DirectoryInfo target = new DirectoryInfo(filePath1.Text);
+
+                    if (!Directory.Exists($"{filePath1.Text}\\{directoryName}"))
+                    {
+                        Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}");
+
+                        foreach (FileInfo fi in dirInfo.GetFiles())
+                        {
+                            fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                        }
+                    }
+                }
+            }
+
+            List<string> pathFiles1 = DirSearch(filePath1.Text);
+
+            listBox1.Items.Clear();
+
+            foreach (var file in pathFiles1)
+            {
+                listBox1.Items.Add(file);
+            }
+
+            List<string> pathFiles2 = DirSearch(filePath2.Text);
+
+            listBox2.Items.Clear();
+
+            foreach (var file in pathFiles2)
+            {
+                listBox2.Items.Add(file);
             }
         }
 
@@ -207,6 +209,9 @@ namespace FreeFileSync
             var files1 = Directory.GetFiles(filePath1.Text);
             var files2 = Directory.GetFiles(filePath2.Text);
 
+            var dirs1 = Directory.GetDirectories(filePath1.Text);
+            var dirs2 = Directory.GetDirectories(filePath2.Text);
+
             if (files1 != null && files2 != null)
             {
                 foreach (var file in files1)
@@ -228,14 +233,61 @@ namespace FreeFileSync
                         File.Copy($"{file}", $"{filePath1.Text}\\{filename}");
                     }
                 }
+            }
 
-                string[] listFiles1 = Directory.GetFiles(filePath1.Text);
-                string[] listDirs1 = Directory.GetDirectories(filePath1.Text);
-                PopulateList(listFiles1, listDirs1, filePath1.Text, listBox1);
+            if (dirs1 != null && dirs2 != null)
+            {
+                foreach (var dir in dirs1)
+                {
+                    string directoryName = Path.GetFileName(dir);
+                    DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                    DirectoryInfo target = new DirectoryInfo(filePath2.Text);
 
-                string[] listFiles2 = Directory.GetFiles(filePath2.Text);
-                string[] listDirs2 = Directory.GetDirectories(filePath2.Text);
-                PopulateList(listFiles2, listDirs2, filePath2.Text, listBox2);
+                    if (!Directory.Exists($"{filePath2.Text}\\{directoryName}"))
+                    {
+                        Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
+
+                        foreach (FileInfo fi in dirInfo.GetFiles())
+                        {
+                            fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                        }
+                    }
+                }
+
+                foreach (var dir in dirs2)
+                {
+                    string directoryName = Path.GetFileName(dir);
+                    DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                    DirectoryInfo target = new DirectoryInfo(filePath1.Text);
+
+                    if (!Directory.Exists($"{filePath1.Text}\\{directoryName}"))
+                    {
+                        Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}");
+
+                        foreach (FileInfo fi in dirInfo.GetFiles())
+                        {
+                            fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                        }
+                    }
+                }
+            }
+
+            List<string> pathFiles1 = DirSearch(filePath1.Text);
+
+            listBox1.Items.Clear();
+
+            foreach (var file in pathFiles1)
+            {
+                listBox1.Items.Add(file);
+            }
+
+            List<string> pathFiles2 = DirSearch(filePath2.Text);
+
+            listBox2.Items.Clear();
+
+            foreach (var file in pathFiles2)
+            {
+                listBox2.Items.Add(file);
             }
         }
     }
