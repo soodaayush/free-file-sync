@@ -91,6 +91,18 @@ namespace FreeFileSync
                         {
                             fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
                         }
+
+                        foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                        {
+                            string subDirectoryName = Path.GetFileName(directory.ToString());
+                            Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
+                            DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                            foreach (FileInfo fi in subTarget.GetFiles())
+                            {
+                                fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                            }
+                        }
                     }
                 }
             }
@@ -157,6 +169,18 @@ namespace FreeFileSync
                         foreach (FileInfo fi in dirInfo.GetFiles())
                         {
                             fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                        }
+
+                        foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                        {
+                            string subDirectoryName = Path.GetFileName(directory.ToString());
+                            Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
+                            DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                            foreach (FileInfo fi in subTarget.GetFiles())
+                            {
+                                fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                            }
                         }
                     }
                 }
@@ -251,6 +275,18 @@ namespace FreeFileSync
                         {
                             fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
                         }
+
+                        foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                        {
+                            string subDirectoryName = Path.GetFileName(directory.ToString());
+                            Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
+                            DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                            foreach (FileInfo fi in subTarget.GetFiles())
+                            {
+                                fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                            }
+                        }
                     }
                 }
 
@@ -267,6 +303,18 @@ namespace FreeFileSync
                         foreach (FileInfo fi in dirInfo.GetFiles())
                         {
                             fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                        }
+
+                        foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                        {
+                            string subDirectoryName = Path.GetFileName(directory.ToString());
+                            Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
+                            DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                            foreach (FileInfo fi in subTarget.GetFiles())
+                            {
+                                fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                            }
                         }
                     }
                 }
