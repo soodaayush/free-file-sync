@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FreeFileSync
@@ -48,7 +49,7 @@ namespace FreeFileSync
             }
         }
 
-        private void SynchronizeLeftToRight_Click(object sender, EventArgs e)
+        private async void SynchronizeLeftToRight_Click(object sender, EventArgs e)
         {
             if (filePath1.Text == "" || filePath2.Text == "")
             {
@@ -64,70 +65,75 @@ namespace FreeFileSync
 
             if (files1 != null && files2 != null)
             {
-                foreach (var file in files1)
+                errorMessage.Text = "";
+
+                await Task.Run(() =>
                 {
-                    string filename = Path.GetFileName(file);
-
-                    if (!File.Exists(Path.Combine(filePath2.Text, filename)))
+                    foreach (var file in files1)
                     {
-                        File.Copy($"{file}", $"{filePath2.Text}\\{filename}");
-                    }
-                }
-            }
+                        string filename = Path.GetFileName(file);
 
-            if (dirs1 != null && dirs2 != null)
-            {
-                foreach (var dir in dirs1)
-                {
-                    string directoryName = Path.GetFileName(dir);
-                    DirectoryInfo dirInfo = new DirectoryInfo(dir);
-                    DirectoryInfo target = new DirectoryInfo(filePath2.Text);
-
-                    if (!Directory.Exists($"{filePath2.Text}\\{directoryName}"))
-                    {
-                        Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
-
-                        foreach (FileInfo fi in dirInfo.GetFiles())
+                        if (!File.Exists(Path.Combine(filePath2.Text, filename)))
                         {
-                            fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                            File.Copy($"{file}", $"{filePath2.Text}\\{filename}");
                         }
+                    }
 
-                        foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+
+                    if (dirs1 != null && dirs2 != null)
+                    {
+                        foreach (var dir in dirs1)
                         {
-                            string subDirectoryName = Path.GetFileName(directory.ToString());
-                            Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
-                            DirectoryInfo subTarget = new DirectoryInfo(directory);
+                            string directoryName = Path.GetFileName(dir);
+                            DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                            DirectoryInfo target = new DirectoryInfo(filePath2.Text);
 
-                            foreach (FileInfo fi in subTarget.GetFiles())
+                            if (!Directory.Exists($"{filePath2.Text}\\{directoryName}"))
                             {
-                                fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                                Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
+
+                                foreach (FileInfo fi in dirInfo.GetFiles())
+                                {
+                                    fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                                }
+
+                                foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                                {
+                                    string subDirectoryName = Path.GetFileName(directory.ToString());
+                                    Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
+                                    DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                                    foreach (FileInfo fi in subTarget.GetFiles())
+                                    {
+                                        fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                });
             }
 
             List<string> pathFiles1 = DirSearch(filePath1.Text);
 
-            listBox1.Items.Clear();
+                listBox1.Items.Clear();
 
-            foreach (var file in pathFiles1)
-            {
-                listBox1.Items.Add(file);
-            }
+                foreach (var file in pathFiles1)
+                {
+                    listBox1.Items.Add(file);
+                }
 
-            List<string> pathFiles2 = DirSearch(filePath2.Text);
+                List<string> pathFiles2 = DirSearch(filePath2.Text);
 
-            listBox2.Items.Clear();
+                listBox2.Items.Clear();
 
-            foreach (var file in pathFiles2)
-            {
-                listBox2.Items.Add(file);
-            }
+                foreach (var file in pathFiles2)
+                {
+                    listBox2.Items.Add(file);
+                }
         }
 
-
-        private void SynchronizeRightToLeft_Click(object sender, EventArgs e)
+        private async void SynchronizeRightToLeft_Click(object sender, EventArgs e)
         {
             if (filePath1.Text == "" || filePath2.Text == "")
             {
@@ -143,6 +149,11 @@ namespace FreeFileSync
 
             if (files1 != null && files2 != null)
             {
+                errorMessage.Text = "";
+
+                await Task.Run(() =>
+                { 
+
                 foreach (var file in files2)
                 {
                     string filename = Path.GetFileName(file);
@@ -152,41 +163,43 @@ namespace FreeFileSync
                         File.Copy($"{file}", $"{filePath1.Text}\\{filename}");
                     }
                 }
-            }
+            
 
             if (dirs1 != null && dirs2 != null)
-            {
-                foreach (var dir in dirs2)
                 {
-                    string directoryName = Path.GetFileName(dir);
-                    DirectoryInfo dirInfo = new DirectoryInfo(dir);
-                    DirectoryInfo target = new DirectoryInfo(filePath1.Text);
-
-                    if (!Directory.Exists($"{filePath1.Text}\\{directoryName}"))
+                    foreach (var dir in dirs2)
                     {
-                        Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}");
+                        string directoryName = Path.GetFileName(dir);
+                        DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                        DirectoryInfo target = new DirectoryInfo(filePath1.Text);
 
-                        foreach (FileInfo fi in dirInfo.GetFiles())
+                        if (!Directory.Exists($"{filePath1.Text}\\{directoryName}"))
                         {
-                            fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
-                        }
+                            Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}");
 
-                        foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
-                        {
-                            string subDirectoryName = Path.GetFileName(directory.ToString());
-                            Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
-                            DirectoryInfo subTarget = new DirectoryInfo(directory);
-
-                            foreach (FileInfo fi in subTarget.GetFiles())
+                            foreach (FileInfo fi in dirInfo.GetFiles())
                             {
-                                fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                                fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                            }
+
+                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                            {
+                                string subDirectoryName = Path.GetFileName(directory.ToString());
+                                Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
+                                DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                                foreach (FileInfo fi in subTarget.GetFiles())
+                                {
+                                    fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                                }
                             }
                         }
                     }
                 }
-            }
+            });
+        }
 
-            List<string> pathFiles1 = DirSearch(filePath1.Text);
+        List<string> pathFiles1 = DirSearch(filePath1.Text);
 
             listBox1.Items.Clear();
 
@@ -222,7 +235,7 @@ namespace FreeFileSync
             return files;
         }
 
-        private void SynchronizeTwoWay_Click(object sender, EventArgs e)
+        private async void SynchronizeTwoWay_Click(object sender, EventArgs e)
         {
             if (filePath1.Text == "" || filePath2.Text == "")
             {
@@ -238,6 +251,11 @@ namespace FreeFileSync
 
             if (files1 != null && files2 != null)
             {
+                errorMessage.Text = "";
+
+                await Task.Run(() =>
+                {
+
                 foreach (var file in files1)
                 {
                     string filename = Path.GetFileName(file);
@@ -257,67 +275,70 @@ namespace FreeFileSync
                         File.Copy($"{file}", $"{filePath1.Text}\\{filename}");
                     }
                 }
-            }
 
-            if (dirs1 != null && dirs2 != null)
-            {
-                foreach (var dir in dirs1)
+                if (dirs1 != null && dirs2 != null)
                 {
-                    string directoryName = Path.GetFileName(dir);
-                    DirectoryInfo dirInfo = new DirectoryInfo(dir);
-                    DirectoryInfo target = new DirectoryInfo(filePath2.Text);
-
-                    if (!Directory.Exists($"{filePath2.Text}\\{directoryName}"))
+                    foreach (var dir in dirs1)
                     {
-                        Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
+                        string directoryName = Path.GetFileName(dir);
+                        DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                        DirectoryInfo target = new DirectoryInfo(filePath2.Text);
 
-                        foreach (FileInfo fi in dirInfo.GetFiles())
+                        if (!Directory.Exists($"{filePath2.Text}\\{directoryName}"))
                         {
-                            fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
-                        }
+                            Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
 
-                        foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
-                        {
-                            string subDirectoryName = Path.GetFileName(directory.ToString());
-                            Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
-                            DirectoryInfo subTarget = new DirectoryInfo(directory);
-
-                            foreach (FileInfo fi in subTarget.GetFiles())
+                            foreach (FileInfo fi in dirInfo.GetFiles())
                             {
-                                fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                                fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                            }
+
+                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                            {
+                                string subDirectoryName = Path.GetFileName(directory.ToString());
+                                Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
+                                DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                                foreach (FileInfo fi in subTarget.GetFiles())
+                                {
+                                    fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                                }
                             }
                         }
                     }
-                }
 
-                foreach (var dir in dirs2)
-                {
-                    string directoryName = Path.GetFileName(dir);
-                    DirectoryInfo dirInfo = new DirectoryInfo(dir);
-                    DirectoryInfo target = new DirectoryInfo(filePath1.Text);
-
-                    if (!Directory.Exists($"{filePath1.Text}\\{directoryName}"))
+                    foreach (var dir in dirs2)
                     {
-                        Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}");
+                        string directoryName = Path.GetFileName(dir);
+                        DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                        DirectoryInfo target = new DirectoryInfo(filePath1.Text);
 
-                        foreach (FileInfo fi in dirInfo.GetFiles())
+                        if (!Directory.Exists($"{filePath1.Text}\\{directoryName}"))
                         {
-                            fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
-                        }
+                            Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}");
 
-                        foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
-                        {
-                            string subDirectoryName = Path.GetFileName(directory.ToString());
-                            Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
-                            DirectoryInfo subTarget = new DirectoryInfo(directory);
-
-                            foreach (FileInfo fi in subTarget.GetFiles())
+                            foreach (FileInfo fi in dirInfo.GetFiles())
                             {
-                                fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                                fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                            }
+
+                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                            {
+                                string subDirectoryName = Path.GetFileName(directory.ToString());
+                                Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
+                                DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                                foreach (FileInfo fi in subTarget.GetFiles())
+                                {
+                                    fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                                }
                             }
                         }
                     }
+
                 }
+            });
+
             }
 
             List<string> pathFiles1 = DirSearch(filePath1.Text);
