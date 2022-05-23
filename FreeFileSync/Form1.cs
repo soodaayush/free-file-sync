@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic.FileIO;
 
 namespace FreeFileSync
 {
@@ -75,7 +77,7 @@ namespace FreeFileSync
 
                         if (!File.Exists(Path.Combine(filePath2.Text, filename)))
                         {
-                            File.Copy($"{file}", $"{filePath2.Text}\\{filename}");
+                            FileSystem.CopyFile($"{file}", $"{filePath2.Text}\\{filename}", UIOption.AllDialogs);
                         }
                     }
 
@@ -94,10 +96,13 @@ namespace FreeFileSync
 
                                 foreach (FileInfo fi in dirInfo.GetFiles())
                                 {
-                                    fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                                    if (!File.Exists(Path.Combine(target.FullName, directoryName, fi.Name)))
+                                    {
+                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                    }
                                 }
 
-                                foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                                foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
                                 {
                                     string subDirectoryName = Path.GetFileName(directory.ToString());
                                     Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
@@ -105,7 +110,10 @@ namespace FreeFileSync
 
                                     foreach (FileInfo fi in subTarget.GetFiles())
                                     {
-                                        fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                                        if (!File.Exists(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name)))
+                                        {
+                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                        }
                                     }
                                 }
                             }
@@ -160,7 +168,7 @@ namespace FreeFileSync
 
                     if (!File.Exists(Path.Combine(filePath1.Text, filename)))
                     {
-                        File.Copy($"{file}", $"{filePath1.Text}\\{filename}");
+                        FileSystem.CopyFile($"{file}", $"{filePath1.Text}\\{filename}", UIOption.AllDialogs);
                     }
                 }
             
@@ -179,10 +187,13 @@ namespace FreeFileSync
 
                             foreach (FileInfo fi in dirInfo.GetFiles())
                             {
-                                fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
+                                    if (!File.Exists(Path.Combine(target.FullName, directoryName, fi.Name)))
+                                    {
+                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                    }
                             }
 
-                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
                             {
                                 string subDirectoryName = Path.GetFileName(directory.ToString());
                                 Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
@@ -190,7 +201,10 @@ namespace FreeFileSync
 
                                 foreach (FileInfo fi in subTarget.GetFiles())
                                 {
-                                    fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
+                                        if (!File.Exists(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name)))
+                                        {
+                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                        }
                                 }
                             }
                         }
@@ -260,21 +274,21 @@ namespace FreeFileSync
                 {
                     string filename = Path.GetFileName(file);
 
-                    if (!File.Exists($"{filePath2.Text}\\{filename}"))
-                    {
-                        File.Copy($"{file}", $"{filePath2.Text}\\{filename}");
+                        if (!File.Exists(Path.Combine(filePath2.Text, filename)))
+                        {
+                            FileSystem.CopyFile($"{file}", $"{filePath2.Text}\\{filename}", UIOption.AllDialogs);
+                        }
                     }
-                }
 
                 foreach (var file in files2)
                 {
                     string filename = Path.GetFileName(file);
 
-                    if (!File.Exists($"{filePath1.Text}\\{filename}"))
-                    {
-                        File.Copy($"{file}", $"{filePath1.Text}\\{filename}");
+                        if (!File.Exists(Path.Combine(filePath1.Text, filename)))
+                        {
+                            FileSystem.CopyFile($"{file}", $"{filePath1.Text}\\{filename}", UIOption.AllDialogs);
+                        }
                     }
-                }
 
                 if (dirs1 != null && dirs2 != null)
                 {
@@ -290,10 +304,13 @@ namespace FreeFileSync
 
                             foreach (FileInfo fi in dirInfo.GetFiles())
                             {
-                                fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
-                            }
+                                    if (!File.Exists(Path.Combine(target.FullName, directoryName, fi.Name)))
+                                    {
+                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                    }
+                                }
 
-                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
                             {
                                 string subDirectoryName = Path.GetFileName(directory.ToString());
                                 Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
@@ -301,8 +318,11 @@ namespace FreeFileSync
 
                                 foreach (FileInfo fi in subTarget.GetFiles())
                                 {
-                                    fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
-                                }
+                                        if (!File.Exists(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name)))
+                                        {
+                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                        }
+                                    }
                             }
                         }
                     }
@@ -319,10 +339,13 @@ namespace FreeFileSync
 
                             foreach (FileInfo fi in dirInfo.GetFiles())
                             {
-                                fi.CopyTo(Path.Combine(target.FullName, directoryName, fi.Name), true);
-                            }
+                                    if (!File.Exists(Path.Combine(target.FullName, directoryName, fi.Name)))
+                                    {
+                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                    }
+                                }
 
-                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", SearchOption.AllDirectories))
+                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
                             {
                                 string subDirectoryName = Path.GetFileName(directory.ToString());
                                 Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
@@ -330,8 +353,11 @@ namespace FreeFileSync
 
                                 foreach (FileInfo fi in subTarget.GetFiles())
                                 {
-                                    fi.CopyTo(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name), true);
-                                }
+                                        if (!File.Exists(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name)))
+                                        {
+                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                        }
+                                    }
                             }
                         }
                     }
