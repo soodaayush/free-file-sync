@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,9 +12,12 @@ namespace FreeFileSync
         public FileSync()
         {
             InitializeComponent();
+
+            label1.Text = "";
+            label2.Text = "";
         }
 
-        private void filePathSearch1_Click(object sender, EventArgs e)
+        private async void filePathSearch1_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
 
@@ -24,16 +26,30 @@ namespace FreeFileSync
                 listBox1.Items.Clear();
 
                 filePath1.Text = folderBrowserDialog.SelectedPath;
-                List<string> files = DirSearch(folderBrowserDialog.SelectedPath);
 
-                foreach (var file in files)
+                List<string> files = new List<string>();
+
+                await Task.Run(() =>
                 {
-                    listBox1.Items.Add(file);
-                }
+                    files = DirSearch(folderBrowserDialog.SelectedPath);
+
+                    var totalCount = files.Count;
+                    var i = 0;
+
+                    foreach (var file in files)
+                    {
+                        string message = $"Loading file {i + 1} of {totalCount}";
+
+                        this.Invoke((MethodInvoker)(() => listBox1.Items.Add(file)));
+                        this.Invoke((MethodInvoker)(() => label1.Text = message));
+
+                        i++;
+                    }
+                });
             }
         }
 
-        private void filePathSearch2_Click(object sender, EventArgs e)
+        private async void filePathSearch2_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
 
@@ -42,12 +58,26 @@ namespace FreeFileSync
                 listBox2.Items.Clear();
 
                 filePath2.Text = folderBrowserDialog.SelectedPath;
-                List<string> files = DirSearch(folderBrowserDialog.SelectedPath);
 
-                foreach (var file in files)
+                List<string> files = new List<string>();
+
+                await Task.Run(() =>
                 {
-                    listBox2.Items.Add(file);
-                }
+                    files = DirSearch(folderBrowserDialog.SelectedPath);
+
+                    var totalCount = files.Count;
+                    var i = 0;
+
+                    foreach (var file in files)
+                    {
+                        string message = $"Loading file {i + 1} of {totalCount}";
+
+                        this.Invoke((MethodInvoker)(() => listBox2.Items.Add(file)));
+                        this.Invoke((MethodInvoker)(() => label2.Text = message));
+
+                        i++;
+                    }
+                });
             }
         }
 

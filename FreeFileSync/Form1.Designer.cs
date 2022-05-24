@@ -40,6 +40,8 @@
             this.synchronizeRightToLeft = new System.Windows.Forms.Button();
             this.synchronizeTwoWay = new System.Windows.Forms.Button();
             this.errorMessage = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // filePath1
@@ -103,7 +105,7 @@
             this.listBox1.ItemHeight = 22;
             this.listBox1.Location = new System.Drawing.Point(72, 213);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(506, 246);
+            this.listBox1.Size = new System.Drawing.Size(506, 224);
             this.listBox1.TabIndex = 7;
             // 
             // listBox2
@@ -114,7 +116,7 @@
             this.listBox2.ItemHeight = 22;
             this.listBox2.Location = new System.Drawing.Point(805, 213);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(506, 246);
+            this.listBox2.Size = new System.Drawing.Size(506, 224);
             this.listBox2.TabIndex = 8;
             // 
             // textBox1
@@ -178,12 +180,37 @@
             this.errorMessage.TabIndex = 13;
             this.errorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Variable Text", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label1.ForeColor = System.Drawing.SystemColors.Menu;
+            this.label1.Location = new System.Drawing.Point(71, 180);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(52, 22);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "label1";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI Variable Text", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label2.ForeColor = System.Drawing.SystemColors.Menu;
+            this.label2.Location = new System.Drawing.Point(805, 180);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(55, 22);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "label2";
+            // 
             // FileSync
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1397, 829);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.errorMessage);
             this.Controls.Add(this.synchronizeTwoWay);
             this.Controls.Add(this.synchronizeRightToLeft);
@@ -218,5 +245,7 @@
         private System.Windows.Forms.Button synchronizeTwoWay;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox errorMessage;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
