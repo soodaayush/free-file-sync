@@ -15,6 +15,7 @@ namespace FreeFileSync
 
             label1.Text = "";
             label2.Text = "";
+            label3.Text = "";
         }
 
         private async void filePathSearch1_Click(object sender, EventArgs e)
@@ -45,6 +46,8 @@ namespace FreeFileSync
 
                         i++;
                     }
+
+                    this.Invoke((MethodInvoker)(() => label1.Text = ""));
                 });
             }
         }
@@ -77,6 +80,8 @@ namespace FreeFileSync
 
                         i++;
                     }
+
+                    this.Invoke((MethodInvoker)(() => label2.Text = ""));
                 });
             }
         }
@@ -104,9 +109,14 @@ namespace FreeFileSync
                     foreach (var file in files1)
                     {
                         string filename = Path.GetFileName(file);
+                        string message;
 
                         if (!File.Exists(Path.Combine(filePath2.Text, filename)))
                         {
+                            message = $"Copying {filename} to {filePath2.Text}";
+
+                            this.Invoke((MethodInvoker)(() => label3.Text = message));
+
                             FileSystem.CopyFile($"{file}", $"{filePath2.Text}\\{filename}", UIOption.AllDialogs);
                         }
                     }
@@ -124,11 +134,17 @@ namespace FreeFileSync
                             {
                                 Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
 
+                                string message;
+
                                 foreach (FileInfo fi in dirInfo.GetFiles())
                                 {
                                     if (!File.Exists(Path.Combine(target.FullName, directoryName, fi.Name)))
                                     {
-                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                        message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName)}";
+
+                                        this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}");
                                     }
                                 }
 
@@ -142,33 +158,37 @@ namespace FreeFileSync
                                     {
                                         if (!File.Exists(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name)))
                                         {
-                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                            message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName, subDirectoryName)}";
+
+                                            this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}");
                                         }
                                     }
                                 }
                             }
                         }
                     }
+
+                    List<string> pathFiles1 = DirSearch(filePath1.Text);
+
+                    this.Invoke((MethodInvoker)(() => listBox1.Items.Clear()));
+
+                    foreach (var file in pathFiles1)
+                    {
+                        this.Invoke((MethodInvoker)(() => listBox1.Items.Add(file)));
+                    }
+
+                    List<string> pathFiles2 = DirSearch(filePath2.Text);
+
+                    this.Invoke((MethodInvoker)(() => listBox2.Items.Clear()));
+
+                    foreach (var file in pathFiles2)
+                    {
+                        this.Invoke((MethodInvoker)(() => listBox2.Items.Add(file)));
+                    }
                 });
             }
-
-            List<string> pathFiles1 = DirSearch(filePath1.Text);
-
-                listBox1.Items.Clear();
-
-                foreach (var file in pathFiles1)
-                {
-                    listBox1.Items.Add(file);
-                }
-
-                List<string> pathFiles2 = DirSearch(filePath2.Text);
-
-                listBox2.Items.Clear();
-
-                foreach (var file in pathFiles2)
-                {
-                    listBox2.Items.Add(file);
-                }
         }
 
         private async void SynchronizeRightToLeft_Click(object sender, EventArgs e)
@@ -203,7 +223,7 @@ namespace FreeFileSync
                 }
             
 
-            if (dirs1 != null && dirs2 != null)
+                if (dirs1 != null && dirs2 != null)
                 {
                     foreach (var dir in dirs2)
                     {
@@ -240,25 +260,25 @@ namespace FreeFileSync
                         }
                     }
                 }
-            });
-        }
 
-        List<string> pathFiles1 = DirSearch(filePath1.Text);
+                    List<string> pathFiles1 = DirSearch(filePath1.Text);
 
-            listBox1.Items.Clear();
+                    this.Invoke((MethodInvoker)(() => listBox1.Items.Clear()));
 
-            foreach (var file in pathFiles1)
-            {
-                listBox1.Items.Add(file);
-            }
+                    foreach (var file in pathFiles1)
+                    {
+                        this.Invoke((MethodInvoker)(() => listBox1.Items.Add(file)));
+                    }
 
-            List<string> pathFiles2 = DirSearch(filePath2.Text);
+                    List<string> pathFiles2 = DirSearch(filePath2.Text);
 
-            listBox2.Items.Clear();
+                    this.Invoke((MethodInvoker)(() => listBox2.Items.Clear()));
 
-            foreach (var file in pathFiles2)
-            {
-                listBox2.Items.Add(file);
+                    foreach (var file in pathFiles2)
+                    {
+                        this.Invoke((MethodInvoker)(() => listBox2.Items.Add(file)));
+                    }
+                });
             }
         }
 
@@ -338,7 +358,7 @@ namespace FreeFileSync
                                     {
                                         FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}", UIOption.AllDialogs);
                                     }
-                                }
+                            }
 
                             foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
                             {
@@ -352,7 +372,7 @@ namespace FreeFileSync
                                         {
                                             FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}", UIOption.AllDialogs);
                                         }
-                                    }
+                                }
                             }
                         }
                     }
@@ -373,7 +393,7 @@ namespace FreeFileSync
                                     {
                                         FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}", UIOption.AllDialogs);
                                     }
-                                }
+                            }
 
                             foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
                             {
@@ -387,32 +407,31 @@ namespace FreeFileSync
                                         {
                                             FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}", UIOption.AllDialogs);
                                         }
-                                    }
+                                }
                             }
                         }
                     }
 
                 }
-            });
 
-            }
+                    List<string> pathFiles1 = DirSearch(filePath1.Text);
 
-            List<string> pathFiles1 = DirSearch(filePath1.Text);
+                    this.Invoke((MethodInvoker)(() => listBox1.Items.Clear()));
 
-            listBox1.Items.Clear();
+                    foreach (var file in pathFiles1)
+                    {
+                        this.Invoke((MethodInvoker)(() => listBox1.Items.Add(file)));
+                    }
 
-            foreach (var file in pathFiles1)
-            {
-                listBox1.Items.Add(file);
-            }
+                    List<string> pathFiles2 = DirSearch(filePath2.Text);
 
-            List<string> pathFiles2 = DirSearch(filePath2.Text);
+                    this.Invoke((MethodInvoker)(() => listBox2.Items.Clear()));
 
-            listBox2.Items.Clear();
-
-            foreach (var file in pathFiles2)
-            {
-                listBox2.Items.Add(file);
+                    foreach (var file in pathFiles2)
+                    {
+                        this.Invoke((MethodInvoker)(() => listBox2.Items.Add(file)));
+                    }
+                });
             }
         }
     }
