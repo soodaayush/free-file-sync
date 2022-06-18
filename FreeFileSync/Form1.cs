@@ -90,7 +90,9 @@ namespace FreeFileSync
         {
             if (filePath1.Text == "" || filePath2.Text == "")
             {
-                errorMessage.Text = "One or more textboxes are not filled!";
+                MessageBox.Show("One or more textboxes have not been filled!", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 return;
             }
 
@@ -102,8 +104,6 @@ namespace FreeFileSync
 
             if (files1 != null && files2 != null)
             {
-                errorMessage.Text = "";
-
                 await Task.Run(() =>
                 {
                     foreach (var file in files1)
@@ -113,11 +113,37 @@ namespace FreeFileSync
 
                         if (!File.Exists(Path.Combine(filePath2.Text, filename)))
                         {
-                            message = $"Copying {filename} to {filePath2.Text}";
+                            FileInfo info = new FileInfo(filename);
+
+                            decimal fileSize = file.Length;
+                            string measurement = "";
+
+                            if (fileSize < 1024)
+                            {
+                                measurement = "Bytes";
+                            }
+
+                            if (fileSize >= 1000000)
+                            {
+                                fileSize = fileSize / 1000000;
+                                fileSize = Math.Round(fileSize, 2);
+                                measurement = "MB";
+                            }
+
+                            if (fileSize >= 1000)
+                            {
+                                fileSize = fileSize / 1000;
+                                fileSize = Math.Round(fileSize, 2);
+                                measurement = "GB";
+                            }
+
+                            message = $"Copying {filename} to {Path.Combine(filePath2.Text, filename)}\n File size: {fileSize} {measurement}";
 
                             this.Invoke((MethodInvoker)(() => label3.Text = message));
 
-                            FileSystem.CopyFile($"{file}", $"{filePath2.Text}\\{filename}", UIOption.AllDialogs);
+                            FileSystem.CopyFile($"{file}", $"{filePath2.Text}\\{filename}");
+
+                            measurement = "";
                         }
                     }
 
@@ -132,19 +158,50 @@ namespace FreeFileSync
 
                             if (!Directory.Exists($"{filePath2.Text}\\{directoryName}"))
                             {
+                                string message;
+
+                                message = $"Creating directory /{directoryName} in {filePath2.Text}";
+
+                                this.Invoke((MethodInvoker)(() => label3.Text = message));
+
                                 Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
 
-                                string message;
 
                                 foreach (FileInfo fi in dirInfo.GetFiles())
                                 {
                                     if (!File.Exists(Path.Combine(target.FullName, directoryName, fi.Name)))
                                     {
-                                        message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName)}";
+                                        FileInfo info = new FileInfo(fi.Name.ToString());
+
+                                        decimal fileSize = fi.Length;
+                                        string measurement = "";
+
+                                        if (fileSize < 1024)
+                                        {
+                                            measurement = "Bytes";
+                                        }
+
+                                        if (fileSize >= 1000000)
+                                        {
+                                            fileSize = fileSize / 1000000;
+                                            fileSize = Math.Round(fileSize, 2);
+                                            measurement = "MB";
+                                        }
+                                        
+                                        if (fileSize >= 1000)
+                                        {
+                                            fileSize = fileSize / 1000;
+                                            fileSize = Math.Round(fileSize, 2);
+                                            measurement = "GB";
+                                        }
+
+                                        message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName)}\n File size: {fileSize} {measurement}";
 
                                         this.Invoke((MethodInvoker)(() => label3.Text = message));
 
                                         FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}");
+
+                                        measurement = "";
                                     }
                                 }
 
@@ -152,17 +209,47 @@ namespace FreeFileSync
                                 {
                                     string subDirectoryName = Path.GetFileName(directory.ToString());
                                     Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
+                                    message = $"Creating subdirectory /{subDirectoryName} in {filePath2.Text}\\{directoryName}";
+
+                                    this.Invoke((MethodInvoker)(() => label3.Text = message));
+
                                     DirectoryInfo subTarget = new DirectoryInfo(directory);
 
                                     foreach (FileInfo fi in subTarget.GetFiles())
                                     {
                                         if (!File.Exists(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name)))
                                         {
-                                            message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName, subDirectoryName)}";
+                                            FileInfo info = new FileInfo(fi.Name.ToString());
+
+                                            decimal fileSize = fi.Length;
+                                            string measurement = "";
+
+                                            if (fileSize < 1024)
+                                            {
+                                                measurement = "Bytes";
+                                            }
+
+                                            if (fileSize >= 1000000)
+                                            {
+                                                fileSize = fileSize / 1000000;
+                                                fileSize = Math.Round(fileSize, 2);
+                                                measurement = "MB";
+                                            }
+
+                                            if (fileSize >= 1000)
+                                            {
+                                                fileSize = fileSize / 1000;
+                                                fileSize = Math.Round(fileSize, 2);
+                                                measurement = "GB";
+                                            }
+
+                                            message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName, subDirectoryName)}\n File size: {fileSize} {measurement}";
 
                                             this.Invoke((MethodInvoker)(() => label3.Text = message));
 
                                             FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}");
+
+                                            measurement = "";
                                         }
                                     }
                                 }
@@ -195,7 +282,9 @@ namespace FreeFileSync
         {
             if (filePath1.Text == "" || filePath2.Text == "")
             {
-                errorMessage.Text = "One or more textboxes are not filled!";
+                MessageBox.Show("One or more textboxes have not been filled!", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 return;
             }
 
@@ -207,59 +296,159 @@ namespace FreeFileSync
 
             if (files1 != null && files2 != null)
             {
-                errorMessage.Text = "";
-
                 await Task.Run(() =>
-                { 
-
-                foreach (var file in files2)
                 {
-                    string filename = Path.GetFileName(file);
 
-                    if (!File.Exists(Path.Combine(filePath1.Text, filename)))
+                    foreach (var file in files2)
                     {
-                        FileSystem.CopyFile($"{file}", $"{filePath1.Text}\\{filename}", UIOption.AllDialogs);
-                    }
-                }
-            
+                        string filename = Path.GetFileName(file);
+                        string message;
 
-                if (dirs1 != null && dirs2 != null)
-                {
-                    foreach (var dir in dirs2)
-                    {
-                        string directoryName = Path.GetFileName(dir);
-                        DirectoryInfo dirInfo = new DirectoryInfo(dir);
-                        DirectoryInfo target = new DirectoryInfo(filePath1.Text);
-
-                        if (!Directory.Exists($"{filePath1.Text}\\{directoryName}"))
+                        if (!File.Exists(Path.Combine(filePath1.Text, filename)))
                         {
-                            Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}");
+                            FileInfo info = new FileInfo(filename);
 
-                            foreach (FileInfo fi in dirInfo.GetFiles())
+                            decimal fileSize = file.Length;
+                            string measurement = "";
+
+                            if (fileSize < 1024)
                             {
-                                    if (!File.Exists(Path.Combine(target.FullName, directoryName, fi.Name)))
-                                    {
-                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}", UIOption.AllDialogs);
-                                    }
+                                measurement = "Bytes";
                             }
 
-                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
+                            if (fileSize >= 1000000)
                             {
-                                string subDirectoryName = Path.GetFileName(directory.ToString());
-                                Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
-                                DirectoryInfo subTarget = new DirectoryInfo(directory);
+                                fileSize = fileSize / 1000000;
+                                fileSize = Math.Round(fileSize, 2);
+                                measurement = "MB";
+                            }
 
-                                foreach (FileInfo fi in subTarget.GetFiles())
+                            if (fileSize >= 1000)
+                            {
+                                fileSize = fileSize / 1000;
+                                fileSize = Math.Round(fileSize, 2);
+                                measurement = "GB";
+                            }
+
+                            message = $"Copying {filename} to {Path.Combine(filePath1.Text, filename)}\n File size: {fileSize} {measurement}";
+
+                            this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                            FileSystem.CopyFile($"{file}", $"{filePath1.Text}\\{filename}");
+
+                            measurement = "";
+                        }
+                    }
+
+
+                    if (dirs1 != null && dirs2 != null)
+                    {
+                        foreach (var dir in dirs2)
+                        {
+                            string directoryName = Path.GetFileName(dir);
+                            DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                            DirectoryInfo target = new DirectoryInfo(filePath1.Text);
+
+                            if (!Directory.Exists($"{filePath1.Text}\\{directoryName}"))
+                            {
+                                string message;
+
+                                message = $"Creating directory /{directoryName} in {filePath1.Text}";
+
+                                this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}");
+
+
+                                foreach (FileInfo fi in dirInfo.GetFiles())
                                 {
+                                    if (!File.Exists(Path.Combine(target.FullName, directoryName, fi.Name)))
+                                    {
+                                        FileInfo info = new FileInfo(fi.Name.ToString());
+
+                                        decimal fileSize = fi.Length;
+                                        string measurement = "";
+
+                                        if (fileSize < 1024)
+                                        {
+                                            measurement = "Bytes";
+                                        }
+
+                                        if (fileSize >= 1000000)
+                                        {
+                                            fileSize = fileSize / 1000000;
+                                            fileSize = Math.Round(fileSize, 2);
+                                            measurement = "MB";
+                                        }
+
+                                        if (fileSize >= 1000)
+                                        {
+                                            fileSize = fileSize / 1000;
+                                            fileSize = Math.Round(fileSize, 2);
+                                            measurement = "GB";
+                                        }
+
+                                        message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName)}\n File size: {fileSize} {measurement}";
+
+                                        this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}");
+
+                                        measurement = "";
+                                    }
+                                }
+
+                                foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
+                                {
+                                    string subDirectoryName = Path.GetFileName(directory.ToString());
+                                    Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
+                                    message = $"Creating subdirectory /{subDirectoryName} in {filePath1.Text}\\{directoryName}";
+
+                                    this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                    DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                                    foreach (FileInfo fi in subTarget.GetFiles())
+                                    {
                                         if (!File.Exists(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name)))
                                         {
-                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                            FileInfo info = new FileInfo(fi.Name.ToString());
+
+                                            decimal fileSize = fi.Length;
+                                            string measurement = "";
+
+                                            if (fileSize < 1024)
+                                            {
+                                                measurement = "Bytes";
+                                            }
+
+                                            if (fileSize >= 1000000)
+                                            {
+                                                fileSize = fileSize / 1000000;
+                                                fileSize = Math.Round(fileSize, 2);
+                                                measurement = "MB";
+                                            }
+
+                                            if (fileSize >= 1000)
+                                            {
+                                                fileSize = fileSize / 1000;
+                                                fileSize = Math.Round(fileSize, 2);
+                                                measurement = "GB";
+                                            }
+
+                                            message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName, subDirectoryName)}\n File size: {fileSize} {measurement}";
+
+                                            this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}");
+
+                                            measurement = "";
                                         }
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
                     List<string> pathFiles1 = DirSearch(filePath1.Text);
 
@@ -303,7 +492,9 @@ namespace FreeFileSync
         {
             if (filePath1.Text == "" || filePath2.Text == "")
             {
-                errorMessage.Text = "One or more textboxes are not filled!";
+                MessageBox.Show("One or more textboxes have not been filled!", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 return;
             }
 
@@ -315,104 +506,307 @@ namespace FreeFileSync
 
             if (files1 != null && files2 != null)
             {
-                errorMessage.Text = "";
-
                 await Task.Run(() =>
                 {
 
-                foreach (var file in files1)
-                {
-                    string filename = Path.GetFileName(file);
+                    foreach (var file in files1)
+                    {
+                        string filename = Path.GetFileName(file);
+                        string message;
 
                         if (!File.Exists(Path.Combine(filePath2.Text, filename)))
                         {
-                            FileSystem.CopyFile($"{file}", $"{filePath2.Text}\\{filename}", UIOption.AllDialogs);
+                            FileInfo info = new FileInfo(filename);
+
+                            decimal fileSize = file.Length;
+                            string measurement = "";
+
+                            if (fileSize < 1024)
+                            {
+                                measurement = "Bytes";
+                            }
+
+                            if (fileSize >= 1000000)
+                            {
+                                fileSize = fileSize / 1000000;
+                                fileSize = Math.Round(fileSize, 2);
+                                measurement = "MB";
+                            }
+
+                            if (fileSize >= 1000)
+                            {
+                                fileSize = fileSize / 1000;
+                                fileSize = Math.Round(fileSize, 2);
+                                measurement = "GB";
+                            }
+
+                            message = $"Copying {filename} to {Path.Combine(filePath2.Text, filename)}\n File size: {fileSize} {measurement}";
+
+                            this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                            FileSystem.CopyFile($"{file}", $"{filePath2.Text}\\{filename}");
+
+                            measurement = "";
                         }
                     }
 
-                foreach (var file in files2)
-                {
-                    string filename = Path.GetFileName(file);
+                    foreach (var file in files2)
+                    {
+                        string filename = Path.GetFileName(file);
+                        string message;
 
                         if (!File.Exists(Path.Combine(filePath1.Text, filename)))
                         {
-                            FileSystem.CopyFile($"{file}", $"{filePath1.Text}\\{filename}", UIOption.AllDialogs);
+                            FileInfo info = new FileInfo(filename);
+
+                            decimal fileSize = file.Length;
+                            string measurement = "";
+
+                            if (fileSize < 1024)
+                            {
+                                measurement = "Bytes";
+                            }
+
+                            if (fileSize >= 1000000)
+                            {
+                                fileSize = fileSize / 1000000;
+                                fileSize = Math.Round(fileSize, 2);
+                                measurement = "MB";
+                            }
+
+                            if (fileSize >= 1000)
+                            {
+                                fileSize = fileSize / 1000;
+                                fileSize = Math.Round(fileSize, 2);
+                                measurement = "GB";
+                            }
+
+                            message = $"Copying {filename} to {Path.Combine(filePath1.Text, filename)}\n File size: {fileSize} {measurement}";
+
+                            this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                            FileSystem.CopyFile($"{file}", $"{filePath1.Text}\\{filename}");
+
+                            measurement = "";
                         }
                     }
 
-                if (dirs1 != null && dirs2 != null)
-                {
-                    foreach (var dir in dirs1)
+                    if (dirs1 != null && dirs2 != null)
                     {
-                        string directoryName = Path.GetFileName(dir);
-                        DirectoryInfo dirInfo = new DirectoryInfo(dir);
-                        DirectoryInfo target = new DirectoryInfo(filePath2.Text);
 
-                        if (!Directory.Exists($"{filePath2.Text}\\{directoryName}"))
+                        foreach (var dir in dirs1)
                         {
-                            Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
+                            string directoryName = Path.GetFileName(dir);
+                            DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                            DirectoryInfo target = new DirectoryInfo(filePath2.Text);
 
-                            foreach (FileInfo fi in dirInfo.GetFiles())
+                            if (!Directory.Exists($"{filePath2.Text}\\{directoryName}"))
                             {
+                                string message;
+
+                                message = $"Creating directory /{directoryName} in {filePath2.Text}";
+
+                                this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}");
+
+
+                                foreach (FileInfo fi in dirInfo.GetFiles())
+                                {
                                     if (!File.Exists(Path.Combine(target.FullName, directoryName, fi.Name)))
                                     {
-                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                        FileInfo info = new FileInfo(fi.Name.ToString());
+
+                                        decimal fileSize = fi.Length;
+                                        string measurement = "";
+
+                                        if (fileSize < 1024)
+                                        {
+                                            measurement = "Bytes";
+                                        }
+
+                                        if (fileSize >= 1000000)
+                                        {
+                                            fileSize = fileSize / 1000000;
+                                            fileSize = Math.Round(fileSize, 2);
+                                            measurement = "MB";
+                                        }
+
+                                        if (fileSize >= 1000)
+                                        {
+                                            fileSize = fileSize / 1000;
+                                            fileSize = Math.Round(fileSize, 2);
+                                            measurement = "GB";
+                                        }
+
+                                        message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName)}\n File size: {fileSize} {measurement}";
+
+                                        this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}");
+
+                                        measurement = "";
                                     }
-                            }
+                                }
 
-                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
-                            {
-                                string subDirectoryName = Path.GetFileName(directory.ToString());
-                                Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
-                                DirectoryInfo subTarget = new DirectoryInfo(directory);
-
-                                foreach (FileInfo fi in subTarget.GetFiles())
+                                foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
                                 {
+                                    string subDirectoryName = Path.GetFileName(directory.ToString());
+                                    Directory.CreateDirectory($"{filePath2.Text}\\{directoryName}\\{subDirectoryName}");
+                                    message = $"Creating subdirectory /{subDirectoryName} in {filePath2.Text}\\{directoryName}";
+
+                                    this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                    DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                                    foreach (FileInfo fi in subTarget.GetFiles())
+                                    {
                                         if (!File.Exists(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name)))
                                         {
-                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                            FileInfo info = new FileInfo(fi.Name.ToString());
+
+                                            decimal fileSize = fi.Length;
+                                            string measurement = "";
+
+                                            if (fileSize < 1024)
+                                            {
+                                                measurement = "Bytes";
+                                            }
+
+                                            if (fileSize >= 1000000)
+                                            {
+                                                fileSize = fileSize / 1000000;
+                                                fileSize = Math.Round(fileSize, 2);
+                                                measurement = "MB";
+                                            }
+
+                                            if (fileSize >= 1000)
+                                            {
+                                                fileSize = fileSize / 1000;
+                                                fileSize = Math.Round(fileSize, 2);
+                                                measurement = "GB";
+                                            }
+
+                                            message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName, subDirectoryName)}\n File size: {fileSize} {measurement}";
+
+                                            this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}");
+
+                                            measurement = "";
                                         }
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    foreach (var dir in dirs2)
-                    {
-                        string directoryName = Path.GetFileName(dir);
-                        DirectoryInfo dirInfo = new DirectoryInfo(dir);
-                        DirectoryInfo target = new DirectoryInfo(filePath1.Text);
-
-                        if (!Directory.Exists($"{filePath1.Text}\\{directoryName}"))
+                        foreach (var dir in dirs2)
                         {
-                            Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}");
+                            string directoryName = Path.GetFileName(dir);
+                            DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                            DirectoryInfo target = new DirectoryInfo(filePath1.Text);
 
-                            foreach (FileInfo fi in dirInfo.GetFiles())
+                            if (!Directory.Exists($"{filePath1.Text}\\{directoryName}"))
                             {
+                                string message;
+
+                                message = $"Creating directory /{directoryName} in {filePath1.Text}";
+
+                                this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}");
+
+
+                                foreach (FileInfo fi in dirInfo.GetFiles())
+                                {
                                     if (!File.Exists(Path.Combine(target.FullName, directoryName, fi.Name)))
                                     {
-                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                        FileInfo info = new FileInfo(fi.Name.ToString());
+
+                                        decimal fileSize = fi.Length;
+                                        string measurement = "";
+
+                                        if (fileSize < 1024)
+                                        {
+                                            measurement = "Bytes";
+                                        }
+
+                                        if (fileSize >= 1000000)
+                                        {
+                                            fileSize = fileSize / 1000000;
+                                            fileSize = Math.Round(fileSize, 2);
+                                            measurement = "MB";
+                                        }
+
+                                        if (fileSize >= 1000)
+                                        {
+                                            fileSize = fileSize / 1000;
+                                            fileSize = Math.Round(fileSize, 2);
+                                            measurement = "GB";
+                                        }
+
+                                        message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName)}\n File size: {fileSize} {measurement}";
+
+                                        this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                        FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{fi.Name}");
+
+                                        measurement = "";
                                     }
-                            }
+                                }
 
-                            foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
-                            {
-                                string subDirectoryName = Path.GetFileName(directory.ToString());
-                                Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
-                                DirectoryInfo subTarget = new DirectoryInfo(directory);
-
-                                foreach (FileInfo fi in subTarget.GetFiles())
+                                foreach (string directory in Directory.GetDirectories(dirInfo.ToString(), "*.*", System.IO.SearchOption.AllDirectories))
                                 {
+                                    string subDirectoryName = Path.GetFileName(directory.ToString());
+                                    Directory.CreateDirectory($"{filePath1.Text}\\{directoryName}\\{subDirectoryName}");
+                                    message = $"Creating subdirectory /{subDirectoryName} in {filePath1.Text}\\{directoryName}";
+
+                                    this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                    DirectoryInfo subTarget = new DirectoryInfo(directory);
+
+                                    foreach (FileInfo fi in subTarget.GetFiles())
+                                    {
                                         if (!File.Exists(Path.Combine(target.FullName, directoryName, subDirectoryName, fi.Name)))
                                         {
-                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}", UIOption.AllDialogs);
+                                            FileInfo info = new FileInfo(fi.Name.ToString());
+
+                                            decimal fileSize = fi.Length;
+                                            string measurement = "";
+
+                                            if (fileSize < 1024)
+                                            {
+                                                measurement = "Bytes";
+                                            }
+
+                                            if (fileSize >= 1000000)
+                                            {
+                                                fileSize = fileSize / 1000000;
+                                                fileSize = Math.Round(fileSize, 2);
+                                                measurement = "MB";
+                                            }
+
+                                            if (fileSize >= 1000)
+                                            {
+                                                fileSize = fileSize / 1000;
+                                                fileSize = Math.Round(fileSize, 2);
+                                                measurement = "GB";
+                                            }
+
+                                            message = $"Copying {fi.Name} to {Path.Combine(target.FullName, directoryName, subDirectoryName)}\n File size: {fileSize} {measurement}";
+
+                                            this.Invoke((MethodInvoker)(() => label3.Text = message));
+
+                                            FileSystem.CopyFile($"{fi}", $"{target.FullName}\\{directoryName}\\{subDirectoryName}\\{fi.Name}");
+
+                                            measurement = "";
                                         }
+                                    }
                                 }
                             }
                         }
-                    }
 
-                }
+                    }
 
                     List<string> pathFiles1 = DirSearch(filePath1.Text);
 
