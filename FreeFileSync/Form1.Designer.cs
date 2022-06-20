@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.filePath1 = new System.Windows.Forms.TextBox();
             this.filePathSearch1 = new System.Windows.Forms.Button();
             this.filePathSearch2 = new System.Windows.Forms.Button();
-            this.filePath2 = new System.Windows.Forms.TextBox();
             this.synchronizeLeftToRight = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.listBox2 = new System.Windows.Forms.ListBox();
@@ -42,18 +40,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.folderOneLabel = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.filePath1 = new System.Windows.Forms.Label();
+            this.filePath2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // filePath1
-            // 
-            this.filePath1.BackColor = System.Drawing.SystemColors.Window;
-            this.filePath1.Font = new System.Drawing.Font("Segoe UI Variable Text", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.filePath1.Location = new System.Drawing.Point(81, 125);
-            this.filePath1.Name = "filePath1";
-            this.filePath1.ReadOnly = true;
-            this.filePath1.Size = new System.Drawing.Size(468, 30);
-            this.filePath1.TabIndex = 0;
-            this.filePath1.TabStop = false;
             // 
             // filePathSearch1
             // 
@@ -76,17 +65,6 @@
             this.filePathSearch2.Text = "...";
             this.filePathSearch2.UseVisualStyleBackColor = true;
             this.filePathSearch2.Click += new System.EventHandler(this.filePathSearch2_Click);
-            // 
-            // filePath2
-            // 
-            this.filePath2.BackColor = System.Drawing.SystemColors.Window;
-            this.filePath2.Font = new System.Drawing.Font("Segoe UI Variable Text", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.filePath2.Location = new System.Drawing.Point(906, 123);
-            this.filePath2.Name = "filePath2";
-            this.filePath2.ReadOnly = true;
-            this.filePath2.Size = new System.Drawing.Size(468, 30);
-            this.filePath2.TabIndex = 3;
-            this.filePath2.TabStop = false;
             // 
             // synchronizeLeftToRight
             // 
@@ -202,12 +180,32 @@
             this.label4.TabIndex = 18;
             this.label4.Text = "Folder Two";
             // 
+            // filePath1
+            // 
+            this.filePath1.BackColor = System.Drawing.SystemColors.Window;
+            this.filePath1.Location = new System.Drawing.Point(81, 125);
+            this.filePath1.Name = "filePath1";
+            this.filePath1.Size = new System.Drawing.Size(463, 30);
+            this.filePath1.TabIndex = 19;
+            this.filePath1.Text = "label5";
+            // 
+            // filePath2
+            // 
+            this.filePath2.BackColor = System.Drawing.SystemColors.Window;
+            this.filePath2.Location = new System.Drawing.Point(900, 123);
+            this.filePath2.Name = "filePath2";
+            this.filePath2.Size = new System.Drawing.Size(463, 30);
+            this.filePath2.TabIndex = 20;
+            this.filePath2.Text = "label5";
+            // 
             // FileSync
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1572, 912);
+            this.Controls.Add(this.filePath2);
+            this.Controls.Add(this.filePath1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.folderOneLabel);
             this.Controls.Add(this.label3);
@@ -219,9 +217,7 @@
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.synchronizeLeftToRight);
             this.Controls.Add(this.filePathSearch2);
-            this.Controls.Add(this.filePath2);
             this.Controls.Add(this.filePathSearch1);
-            this.Controls.Add(this.filePath1);
             this.Font = new System.Drawing.Font("Segoe UI Variable Text", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Name = "FileSync";
             this.Text = "FileSync";
@@ -231,11 +227,8 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox filePath1;
         private System.Windows.Forms.Button filePathSearch1;
         private System.Windows.Forms.Button filePathSearch2;
-        private System.Windows.Forms.TextBox filePath2;
         private System.Windows.Forms.Button synchronizeLeftToRight;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.ListBox listBox2;
@@ -247,5 +240,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label folderOneLabel;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label filePath1;
+        private System.Windows.Forms.Label filePath2;
     }
 }

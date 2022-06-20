@@ -16,6 +16,9 @@ namespace FreeFileSync
             label1.Text = "";
             label2.Text = "";
             label3.Text = "";
+
+            filePath1.Text = "";
+            filePath2.Text = "";
         }
 
         private async void filePathSearch1_Click(object sender, EventArgs e)
