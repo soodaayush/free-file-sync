@@ -10,6 +10,10 @@ I wanted to create a useful program in C# .NET and decided on creating a file sy
 
 Creating the logic behind syncing files and multithreading to insure the app runs smoothly.
 
+## Lessons Learned
+
+Learned the basics of C# .NET and learned how to do multithreading within an application.
+
 ## The Program
 
 This program allows you to sync files from one directory to another. There are three ways to sync: Left to Right, Right to Left, and Two Way
