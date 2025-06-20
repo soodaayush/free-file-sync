@@ -4,16 +4,24 @@
 
 ## Inspiration
 
-I wanted to create a useful program in C# .NET and decided on creating a file syncing app.
+I created this project as a way to dive into C# .NET development by solving a real-world problem: keeping folders in sync without relying on third-party software.
 
 ## Challenges
 
-Creating the logic behind syncing files and multithreading to ensure the app runs smoothly.
+- Designing a reliable file comparison and syncing algorithm
+- Implementing multithreading to maintain UI responsiveness during sync operations
+- Ensuring file integrity and avoiding unnecessary overwrites
 
 ## Lessons Learned
 
-Learned the basics of C# .NET and how to implement multithreading within an application.
+- Core concepts of C# and .NET application development
+- How to implement multithreading and async operations in Windows Forms
+- File system operations and safeguards to avoid data loss
 
 ## The Program
 
-This program allows you to sync files from one directory to another. There are three ways to sync: Left to Right, Right to Left, and Two-Way.
+FreeFileSync is a desktop application that allows users to synchronize files between two directories with ease. Whether you're backing up data, mirroring a folder, or keeping two directories consistent, FreeFileSync provides three modes of synchronization:
+
+- Left to Right – Copies files from the left directory to the right.
+- Right to Left – Copies files from the right directory to the left.
+- Two-Way Sync – Ensures both directories contain the same files.
